@@ -7,6 +7,8 @@ const socket = io("http://localhost:3000");
 function App() {
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]); // Store received messages
+  const [socketId, setSocketId] = useState("");
+  const [roomName, setRoomName] = useState("");
 
   useEffect(() => {
     socket.on("connect", () => {
@@ -36,9 +38,48 @@ function App() {
     setMessage(""); // Clear input after sending
   }
 
+  const joinRoomHandle = (event) => {
+    event.preventDefault();
+    socket.emit('join-room', roomName);
+    setRoomName(""); // Clear input after joining
+  }
+
   return (
     <div style={{ maxWidth: '800px', margin: '0 auto', padding: '20px' }}>
       <h1>WebSocket Client</h1>
+
+      <form onSubmit={joinRoomHandle}>
+        <h5>Join Room</h5>
+         <input 
+          type="text"
+          value={roomName} 
+          onChange={(e) => setRoomName(e.target.value)} 
+          placeholder="Type a message"
+          style={{
+            width: '100%',
+            padding: '10px',
+            fontSize: '16px',
+            border: '1px solid #ccc',
+            borderRadius: '4px',
+            boxSizing: 'border-box'
+          }}
+        />
+        <button 
+          type="submit"
+          style={{
+            marginTop: '16px',
+            padding: '10px 20px',
+            fontSize: '16px',
+            backgroundColor: '#1976d2',
+            color: 'white',
+            border: 'none',
+            borderRadius: '4px',
+            cursor: 'pointer'
+          }}
+        >
+          Join
+        </button>
+      </form>
 
       <form onSubmit={handleSubmit}>
         <input 
